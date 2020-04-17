@@ -195,9 +195,9 @@ Ensure the test server from above is not running.
 ```sh
   chmod 755 /home/erp
   chcon -t httpd_config_t config/nginx.conf
-  sudo setsebool httpd_can_network_connect=1
-  sudo setsebool httpd_can_network_connect=1
-  sudo setsebool httpd_read_user_content=1
+  sudo setsebool -P httpd_can_network_connect=1
+  sudo setsebool -P httpd_can_network_connect=1
+  sudo setsebool -P httpd_read_user_content=1
 ```
 
 3) Link the new configuration files to their respective services:
