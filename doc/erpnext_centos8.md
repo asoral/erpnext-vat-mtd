@@ -11,9 +11,7 @@ Just so you know:
 ## Install CentOS8.
 
 1) Install CentOS 8. We chose the "minimal" install for this guide. If you've
-   picked another option you'll probably need to open 
-   you're new or rusty with this stuff we recommend you pick one of the 
-   "Server" installs because they include more helpful tools.
+   picked another option you'll probably need to open the firwall on port 8000.
 
 2) After install, login and ensure your installation is up to date
    by running :
