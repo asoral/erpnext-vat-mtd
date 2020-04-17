@@ -10,8 +10,7 @@ Just so you know:
 
 ## Install CentOS8.
 
-1) Install CentOS 8. We chose the "minimal" install for this guide. If you've
-   picked another option you'll probably need to open the firwall on port 8000.
+1) Install CentOS 8. We chose the "minimal" install for this guide.
 
 2) After install, login and ensure your installation is up to date
    by running :
@@ -47,6 +46,14 @@ You might want to cut'n'paste this one!
 
 ```sh
   sudo sed -i 's/^#\s*\(%wheel\s\+ALL=(ALL)\s\+NOPASSWD:\s\+ALL\)/\1/' /etc/sudoers
+```
+
+4) Open the firewall
+
+```sh
+  sudo firewall-cmd --zone=public --add-port=80/tcp
+  sudo firewall-cmd --zone=public --add-port=8000/tcp
+  sudo firewall-cmd --runtime-to-permanent
 ```
 
 ## Prepare MariaDB (mysql) for ERPNext
@@ -175,22 +182,32 @@ any time.
 
 Ensure the test server from above is not running.
 
+
 1) Create the production configuration files for supervisor and nginx:
 
 ```sh
   bench setup supervisor
   bench setup nginx
-  chcon -t httpd_config_t config/nginx.conf
 ```
 
-2) Link the new configuration files to their respective services:
+2) Set permissions including relaxing SELinux a bit
+
+```sh
+  chmod 755 /home/erp
+  chcon -t httpd_config_t config/nginx.conf
+  sudo setsebool httpd_can_network_connect=1
+  sudo setsebool httpd_can_network_connect=1
+  sudo setsebool httpd_read_user_content=1
+```
+
+3) Link the new configuration files to their respective services:
 
 ```sh
   sudo ln -s `pwd`/config/supervisor.conf /etc/supervisor/conf.d/frappe-bench.ini
   sudo ln -s `pwd`/config/nginx.conf /etc/nginx/conf.d/frappe-bench.conf
 ```
 
-3) Enable services to start at boot and start them now
+4) Enable services to start at boot and start them now
 ```sh
   sudo systemctl enable supervisord
   sudo systemctl enable nginx
@@ -198,7 +215,7 @@ Ensure the test server from above is not running.
   sudo systemctl start nginx
 ```
 
-4) Reboot
+5) Reboot
 ```sh
   reboot
 ```
