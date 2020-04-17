@@ -4,7 +4,7 @@ Some quick notes on installing ERPNext on CentOS 8.
 
 Just so you know:
 
- * This is a minimal working installation, not a production site.
+ * This is a minimal working installation.
 
  * We don't cover firewalls and making the box secure - that's up to you!
 
@@ -171,3 +171,37 @@ Visit it with a browser to set it up.
 When you're done, press "Ctrl+C" to stop the site. You can start it again at
 any time.
 
+## (Optional) Setup in production mode
+
+Ensure the test server from above is not running.
+
+1) Create the production configuration files for supervisor and nginx:
+
+```sh
+  bench setup supervisor
+  bench setup nginx
+  chcon -t httpd_config_t config/nginx.conf
+```
+
+2) Link the new configuration files to their respective services:
+
+```sh
+  sudo ln -s `pwd`/config/supervisor.conf /etc/supervisor/conf.d/frappe-bench.ini
+  sudo ln -s `pwd`/config/nginx.conf /etc/nginx/conf.d/frappe-bench.conf
+```
+
+3) Enable services to start at boot and start them now
+```sh
+  sudo systemctl enable supervisord
+  sudo systemctl enable nginx
+  sudo systemctl start supervisord
+  sudo systemctl start nginx
+```
+
+4) Reboot
+```sh
+  reboot
+```
+
+After this your server should be accessible on port 80. This depends on using the
+correct domain name.
